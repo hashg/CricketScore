@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Cricket Score</string>
+    <string name="team_india_name">ind</string>
+    <string name="team_SA_name">sa</string>
+    <string name="button_text_6Runs">+6 Runs</string>
+    <string name="button_text_4Runs">+4 Runs</string>
+    <string name="button_text_1Run">+1 Run</string>
+    <string name="button_text_0Run">+0 Run</string>
+    <string name="button_text_1Wicket">+1 Wicket</string>
+    <string name="button_text_1NoBall">NB</string>
+    <string name="button_text_1Wide">WD</string>
+    <string name="button_text_1Bye">B</string>
+    <string name="button_text_1LegBye">LB</string>
+    <string name="text_view_teamA">Team A</string>
+    <string name="text_view_teamB">Team B</string>
+    <string name="button_text_reset">Reset</string>
+</resources>
