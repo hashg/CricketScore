@@ -3,6 +3,8 @@ package com.example.hgowda.cricketscore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -10,18 +12,67 @@ public class MainActivity extends AppCompatActivity {
     int scoreTeamIndia = 0;
     int ballsTeamIndia = 0;
     int wicketsTeamIndia = 0;
+    TextView scoreViewIndia;
+    TextView overViewIndia;
+    LinearLayout layoutIndia;
 
     int scoreTeamSA = 0;
     int ballsTeamSA = 0;
     int wicketsTeamSA = 0;
+    TextView scoreViewSA;
+    TextView overViewSA;
+    LinearLayout layoutSA;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        scoreViewIndia = findViewById(R.id.team_india_score);
+        overViewIndia = findViewById(R.id.team_india_overs);
+        layoutIndia = findViewById(R.id.team_india_layout);
+
+        scoreViewSA = findViewById(R.id.team_sa_score);
+        overViewSA = findViewById(R.id.team_sa_overs);
+        layoutSA = findViewById(R.id.team_sa_layout);
+
+        if (savedInstanceState != null) {
+            scoreTeamIndia = savedInstanceState.getInt("scoreTeamIndia");
+            ballsTeamIndia = savedInstanceState.getInt("ballsTeamIndia");
+            wicketsTeamIndia = savedInstanceState.getInt("wicketsTeamIndia");
+
+            scoreTeamSA = savedInstanceState.getInt("scoreTeamSA");
+            ballsTeamSA = savedInstanceState.getInt("ballsTeamSA");
+            wicketsTeamSA = savedInstanceState.getInt("wicketsTeamSA");
+        }
+        disableButtons(layoutSA);
         displayForTeamIndia(scoreTeamIndia, ballsTeamIndia, wicketsTeamIndia);
         displayForTeamSA(scoreTeamSA, ballsTeamSA, wicketsTeamSA);
     }
+
+    public void disableButtons(LinearLayout layout) {
+        for (int i = 0; i < layout.getChildCount(); i++) {
+            View child = layout.getChildAt(i);
+            if (child instanceof Button) {
+                child.setEnabled(false);
+            }
+            if (child instanceof LinearLayout) {
+                disableButtons((LinearLayout) child);
+            }
+        }
+    }
+
+    public void enableButtons(LinearLayout layout) {
+        for (int i = 0; i < layout.getChildCount(); i++) {
+            View child = layout.getChildAt(i);
+            if (child instanceof Button) {
+                child.setEnabled(true);
+            }
+            if (child instanceof LinearLayout) {
+                enableButtons((LinearLayout) child);
+            }
+        }
+    }
+
 
     public String fmtScore(int score, int wickets) {
         return score + "/" + wickets;
@@ -38,23 +89,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void displayForTeamIndia(int score, int balls, int wickets) {
-        TextView scoreView = findViewById(R.id.team_india_score);
-        String scoreLocal = fmtScore(score, wickets);
-        scoreView.setText(scoreLocal);
+        //if team has completed 20 overs or lost all 10 wickets
+        // then innings has to shift to next team
+        if (balls >= 120 || wickets >= 10) {
+            disableButtons(layoutIndia);
+            enableButtons(layoutSA);
+        }
 
-        TextView overView = findViewById(R.id.team_india_overs);
+        String scoreLocal = fmtScore(score, wickets);
+        scoreViewIndia.setText(scoreLocal);
+
         String overs = calcOver(balls);
-        overView.setText(overs);
+        overViewIndia.setText(overs);
     }
 
     public void displayForTeamSA(int score, int balls, int wickets) {
-        TextView scoreView = findViewById(R.id.team_sa_score);
-        String scoreLocal = fmtScore(score, wickets);
-        scoreView.setText(scoreLocal);
+        //if team has completed 20 overs or lost all 10 wickets
+        // then innings has to shift to next team
+        if (balls >= 120 || wickets >= 10) {
+            disableButtons(layoutSA);
+            enableButtons(layoutIndia);
+        }
 
-        TextView overView = findViewById(R.id.team_sa_overs);
+        String scoreLocal = fmtScore(score, wickets);
+        scoreViewSA.setText(scoreLocal);
+
         String overs = calcOver(balls);
-        overView.setText(overs);
+        overViewSA.setText(overs);
     }
 
     public void add6RunForIndia(View view) {
@@ -163,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
         displayForTeamSA(scoreTeamSA, ballsTeamSA, wicketsTeamSA);
     }
 
-    public void resetScore(View view){
+    public void resetScore(View view) {
         scoreTeamIndia = 0;
         ballsTeamIndia = 0;
         wicketsTeamIndia = 0;
@@ -171,7 +232,41 @@ public class MainActivity extends AppCompatActivity {
         scoreTeamSA = 0;
         ballsTeamSA = 0;
         wicketsTeamSA = 0;
+
         displayForTeamIndia(scoreTeamIndia, ballsTeamIndia, wicketsTeamIndia);
         displayForTeamSA(scoreTeamSA, ballsTeamSA, wicketsTeamSA);
+
+        enableButtons(layoutIndia);
+        disableButtons(layoutSA);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        // Save UI state changes to the savedInstanceState.
+        // This bundle will be passed to onCreate if the process is
+        // killed and restarted.
+
+        savedInstanceState.putInt("scoreTeamIndia", scoreTeamIndia);
+        savedInstanceState.putInt("ballsTeamIndia", ballsTeamIndia);
+        savedInstanceState.putInt("wicketsTeamIndia", wicketsTeamIndia);
+
+        savedInstanceState.putInt("scoreTeamSA", scoreTeamSA);
+        savedInstanceState.putInt("ballsTeamSA", ballsTeamSA);
+        savedInstanceState.putInt("wicketsTeamSA", wicketsTeamSA);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        // Restore UI state from the savedInstanceState.
+        // This bundle has also been passed to onCreate.
+        scoreTeamIndia = savedInstanceState.getInt("scoreTeamIndia");
+        ballsTeamIndia = savedInstanceState.getInt("ballsTeamIndia");
+        wicketsTeamIndia = savedInstanceState.getInt("wicketsTeamIndia");
+
+        scoreTeamSA = savedInstanceState.getInt("scoreTeamSA");
+        ballsTeamSA = savedInstanceState.getInt("ballsTeamSA");
+        wicketsTeamSA = savedInstanceState.getInt("wicketsTeamSA");
     }
 }

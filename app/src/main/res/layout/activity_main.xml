@@ -19,6 +19,7 @@
         android:orientation="horizontal">
 
         <LinearLayout
+            android:id="@+id/team_india_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -131,6 +132,7 @@
             android:background="@android:color/darker_gray"></View>
 
         <LinearLayout
+            android:id="@+id/team_sa_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
